@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ByteScribe | Premium Blog{% endblock %}</title>
+  <!-- Main CSS Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="nav-brand">
+      ByteScribe<span>.</span>
+    </a>
+    
+    <ul class="nav-links">
+      <li>
+        <a href="{{ url_for('index') }}" class="nav-link {% if request.path == '/' %}active{% endif %}">
+          Home
+        </a>
+      </li>
+      {% if current_user.is_authenticated %}
+        <li>
+          <a href="{{ url_for('create_post') }}" class="nav-link {% if request.path == '/post/new' %}active{% endif %}">
+            Write Post
+          </a>
+        </li>
+        <li>
+          <span class="nav-link" style="color: var(--text-muted);">
+            Hi, <strong>{{ current_user.username }}</strong>
+          </span>
+        </li>
+        <li>
+          <a href="{{ url_for('logout') }}" class="nav-link nav-btn" style="box-shadow: none; background: var(--accent-rose);">
+            Logout
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a href="{{ url_for('login') }}" class="nav-link {% if request.path == '/login' %}active{% endif %}">
+            Login
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('signup') }}" class="nav-link nav-btn">
+            Get Started
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <!-- Main Area -->
+  <main class="main-content">
+    <!-- Flash Notifications -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 ByteScribe. Designed for Modern Tech Internships.</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

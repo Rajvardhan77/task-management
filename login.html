@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | ByteScribe{% endblock %}
+
+{% block content %}
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Login to your ByteScribe account</p>
+    </div>
+
+    <form action="{{ url_for('login') }}" method="POST">
+      <div class="form-group">
+        <label for="username_or_email" class="form-label">Username or Email</label>
+        <input type="text" id="username_or_email" name="username_or_email" class="form-control" required placeholder="Enter username or email" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required placeholder="Enter password" autocomplete="off">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 32px;">Login</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a href="{{ url_for('signup') }}" class="auth-link">Sign up</a></p>
+    </div>
+  </div>
+{% endblock %}
