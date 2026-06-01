@@ -1,4 +1,5 @@
-import mysql.connector
+import pymysql
+import pymysql.cursors
 import sqlite3
 import os
 from datetime import datetime, timedelta
@@ -75,10 +76,13 @@ class UnifiedConnectionWrapper:
             self.conn.row_factory = sqlite3.Row
             return UnifiedCursorWrapper(self.conn.cursor(), is_sqlite=True, dictionary=dictionary)
         else:
-            return UnifiedCursorWrapper(self.conn.cursor(dictionary=dictionary), is_sqlite=False, dictionary=dictionary)
+            if dictionary:
+                return UnifiedCursorWrapper(self.conn.cursor(pymysql.cursors.DictCursor), is_sqlite=False, dictionary=dictionary)
+            else:
+                return UnifiedCursorWrapper(self.conn.cursor(), is_sqlite=False, dictionary=dictionary)
 
     def commit(self):
-        self.conn.commit()
+        self.conn.conn.commit() if hasattr(self.conn, 'conn') else self.conn.commit()
 
     def close(self):
         self.conn.close()
@@ -89,12 +93,12 @@ class UnifiedConnectionWrapper:
 def get_db_connection():
     try:
         # Try connecting to MySQL with a short timeout (e.g. 3s) so local startup is fast
-        conn = mysql.connector.connect(
+        conn = pymysql.connect(
             host="245124737102.mysql.pythonanywhere-services.com",
             user="245124737102",
             password="R@jvardhan25",
             database="245124737102$default",
-            connection_timeout=3
+            connect_timeout=3
         )
         print("Connected to remote MySQL database.")
         
